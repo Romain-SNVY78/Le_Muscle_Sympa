@@ -1,0 +1,122 @@
+  :root{
+    --orange:#ff8000; --orange-dark:#cc6600;
+    --header-h:72px;                 /* ← hauteur unique pour toutes les pages */
+    --header-bg:#111;
+    --header-brd:rgba(255,255,255,.08);
+
+    --nav-h:40px;                    /* ← hauteur de chaque item (liens + pilule) */
+    --underline-h:2px;
+  }
+
+  /* Espace réservé sous la barre fixe — identique partout */
+  html,body{margin:0;padding:0}
+  body{padding-top:var(--header-h)}
+
+  /* ===== HEADER (namespacé) ===== */
+  .site-header{
+    position:fixed; inset:0 0 auto 0; height:var(--header-h);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 28px; background:var(--header-bg);
+    box-shadow:0 6px 18px rgba(0,0,0,.45); z-index:2147483647;
+  }
+  @media (max-width:700px){ .site-header{ padding:10px 14px } }
+
+  /* Reset local ultra strict: rien de la page ne déborde sur le header */
+  .site-header, .site-header *{
+    box-sizing:border-box;
+  }
+  .site-header a{
+    all:unset;                        /* reset total */
+    display:inline-block;
+    cursor:pointer;
+    color:inherit;
+  }
+  .site-header a:focus{ outline:none }
+  .site-header img{
+    all:unset;
+    display:block;
+    height:44px; width:auto;
+  }
+
+  /* Marque */
+  .site-header .site-brand{
+    display:flex; align-items:center; gap:10px;
+    color:var(--orange); font-weight:800;
+    height:var(--nav-h);
+  }
+  .site-header .site-brand h2{ margin:0; font-size:20px; color:var(--orange) }
+  .site-header .site-brand:hover h2{ color:#fff; text-decoration:underline }
+
+  /* Nav */
+  .site-header .site-nav{
+    display:flex; align-items:center; gap:22px; height:var(--nav-h);
+  }
+
+  /* Liens: boîte fixe (ne bouge jamais), underline en box-shadow */
+  .site-header .site-link{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:var(--nav-h); padding:0 4px;
+    color:var(--orange); font-weight:800; line-height:1;
+  }
+  .site-header .site-link:hover{ color:#fff; text-decoration:underline }
+  .site-header .site-link.active{
+    color:#fff;
+    text-decoration:none;
+    box-shadow: inset 0 calc(-1 * var(--underline-h)) 0 0 var(--orange);
+  }
+
+  /* Pilule compte: même hauteur que les autres, pas de variant “active” */
+  .site-header .userpill{
+    display:inline-flex; align-items:center; gap:10px;
+    height:var(--nav-h); padding:0 14px; border-radius:999px;
+    border:1px solid var(--header-brd);
+    background:rgba(255,255,255,.06);
+    color:#fff; line-height:1;
+  }
+  .site-header .userpill:hover{ background:rgba(255,255,255,.12) }
+  .site-header .userpill.active{ box-shadow:none }          /* pas d’underline */
+
+  /* Avatar parfaitement centré, contre toute règle héritée */
+  .site-header .userpill .avatar{
+    width:28px; height:28px; flex:0 0 28px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--orange); color:#111; font-weight:900;
+    line-height:28px !important;
+    transform:none !important; margin:0 !important; padding:0 !important;
+  }
+  .site-header .userpill .name{
+    font-weight:700; white-space:nowrap; transform:none !important;
+  }
+  /* Animation d'apparition/disparition */
+.site-header{
+  transition: transform .25s ease;   /* AJOUT */
+  will-change: transform;             /* AJOUT */
+}
+.site-header.is-hidden{               /* AJOUT */
+  transform: translateY(-100%);
+}
+
+/* ===== Bouton remonter en haut ===== */
+.to-top{
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom)); /* iPhone safe area */
+  width: 44px; height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.25);
+  background: var(--orange);
+  color: #111;
+  display: grid; place-items: center;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  z-index: 2147483600;              /* au-dessus du header */
+  opacity: 0; transform: translateY(10px) scale(.9);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.to-top.show{
+  opacity: 1; transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.to-top:hover{ box-shadow: 0 12px 30px rgba(255,128,0,.35); }
+.to-top:focus-visible{ outline: 2px solid #fff; outline-offset: 2px; }

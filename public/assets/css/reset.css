@@ -1,0 +1,12 @@
+
+    :root{ --orange:#ff8000; --bd:rgba(255,255,255,.12); --bg:#222; --panel:#1f1f1f; --text:#fff; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+    .wrap{max-width:800px;margin:30px auto;padding:0 18px}
+    .card{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:18px}
+    label{display:block;font-weight:700;margin-bottom:6px}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:#2b2b2b;color:#fff}
+    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .btn{border:none;border-radius:10px;padding:12px 18px;font-weight:800;cursor:pointer;background:var(--orange);color:#111}
+    .btn.secondary{background:transparent;color:#fff;border:1px solid var(--bd)}
+    .alert{margin:10px 0;padding:10px;border-radius:8px;border:1px solid var(--bd);background:#3a1515}
+    .ok{margin:10px 0;padding:10px;border-radius:8px;border:1px solid var(--bd);background:#143a14}

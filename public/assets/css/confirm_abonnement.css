@@ -1,0 +1,54 @@
+
+    :root{
+      --orange:#ff8000;
+      --orange-dark:#cc6600;
+      --bg:#2b2b2b;
+      --text:#ffffff;
+      --muted:#cfcfcf;
+      --glass: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+      --ok:#0abf5b;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(255,128,0,0.15), transparent)
+                , radial-gradient(1200px 800px at 110% 10%, rgba(255,128,0,0.12), transparent)
+                , var(--bg);
+      color: var(--text);
+    }
+    .wrap{ max-width:900px; margin:30px auto; padding:0 18px; }
+    h1{ color:var(--orange); margin:0 0 8px; font-size:28px }
+    p.sub{ color:var(--muted); margin:0 0 18px }
+
+    .card{
+      background:linear-gradient(180deg, var(--glass), rgba(255,255,255,0.03));
+      border:1px solid var(--glass-border);
+      border-radius:16px; padding:22px;
+      box-shadow:0 12px 30px rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
+    }
+
+    .price{ font-size:36px; font-weight:800; margin:12px 0 6px }
+    .per{ font-size:14px; color:var(--muted); margin-left:6px }
+
+    ul{ margin:12px 0 0; padding-left:18px }
+    li{ margin:8px 0 }
+
+    .cta{ margin-top:16px; display:flex; gap:10px; flex-wrap:wrap }
+    .btn{
+      border:none; border-radius:10px; padding:12px 18px;
+      font-weight:800; cursor:pointer; letter-spacing:.3px;
+      background:var(--orange); color:#111;
+      transition: background .25s ease, transform .05s ease;
+    }
+    .btn:hover{ background:var(--orange-dark) }
+    .btn:active{ transform: translateY(1px) }
+    .btn.secondary{
+      background:transparent; color:#fff; border:1px solid var(--glass-border)
+    }
+    .alert{
+      margin:14px 0 0; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.15);
+      background: rgba(10,191,91,.15); color:#dfffe9;
+    }
