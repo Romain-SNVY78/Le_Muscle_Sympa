@@ -62,17 +62,28 @@ $active = 'programs';
 
         <!-- Objectif & expérience -->
         <div>
-          <label for="objectif">Objectif principal</label>
+          <label for="objectif">Objectif spécifique</label>
           <select id="objectif" name="objectif" required>
             <option value="">— Sélectionner —</option>
-            <option value="prise_masse">Prise de masse</option>
-            <option value="perte_poids">Perte de poids</option>
-            <option value="force">Force</option>
-            <option value="endurance">Endurance</option>
-            <option value="forme">Remise/Entretien</option>
-            <option value="esthetique">Esthétique / Tonus</option>
+            <?php if ($type === 'renforcement'): ?>
+              <option value="force">Gagner en force maximale</option>
+              <option value="prise_masse">Développer la masse musculaire</option>
+              <option value="perte_poids">Renforcer tout en perdant du poids</option>
+            <?php elseif ($type === 'endurance'): ?>
+              <option value="endurance">Améliorer l'endurance cardiovasculaire</option>
+              <option value="perte_poids">Endurance + perte de poids</option>
+              <option value="forme">Maintenir ma condition physique</option>
+            <?php elseif ($type === 'esthetique'): ?>
+              <option value="prise_masse">Prise de masse musculaire</option>
+              <option value="esthetique">Tonification et définition</option>
+              <option value="perte_poids">Sculpter en perdant du gras</option>
+            <?php elseif ($type === 'entretien'): ?>
+              <option value="forme">Maintenir ma forme actuelle</option>
+              <option value="perte_poids">Entretien + perte de poids</option>
+              <option value="esthetique">Entretien + tonification</option>
+            <?php endif; ?>
           </select>
-          <div class="help">Nous adapterons les plages de répétitions, le volume et le cardio.</div>
+          <div class="help">Affine les plages de répétitions, l'intensité et le volume d'entraînement.</div>
         </div>
 
         <div>
@@ -85,18 +96,40 @@ $active = 'programs';
           </select>
         </div>
 
-        <!-- Fréquence & planning -->
+        <!-- Planning d'entraînement -->
         <div>
           <label for="frequence">Séances / semaine souhaitées</label>
           <select id="frequence" name="frequence" required>
             <option value="">— Sélectionner —</option>
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
           </select>
+          <div class="help">Le programme sera structuré en "Jour 1", "Jour 2", etc. pour plus de flexibilité.</div>
         </div>
 
         <div>
-          <label for="jours">Jours disponibles (ex : Lun, Mer, Ven)</label>
-          <input id="jours" name="jours" type="text" placeholder="Lun, Mer, Ven" />
+          <label for="duree">Durée souhaitée par séance</label>
+          <select id="duree" name="duree" required>
+            <option value="">— Sélectionner —</option>
+            <?php if ($type === 'endurance'): ?>
+              <option value="30">30 min (HIIT intense)</option>
+              <option value="40">40 min (Cardio modéré)</option>
+              <option value="45">45 min (Cardio + circuits)</option>
+              <option value="60">60 min (Endurance longue)</option>
+            <?php elseif ($type === 'renforcement'): ?>
+              <option value="50">50 min (Express)</option>
+              <option value="60">60 min (Standard)</option>
+              <option value="70">70 min (Complet)</option>
+            <?php elseif ($type === 'esthetique'): ?>
+              <option value="50">50 min (Rapide)</option>
+              <option value="60">60 min (Optimal)</option>
+              <option value="70">70 min (Volume élevé)</option>
+            <?php elseif ($type === 'entretien'): ?>
+              <option value="30">30 min (Express)</option>
+              <option value="40">40 min (Standard)</option>
+              <option value="50">50 min (Complet)</option>
+            <?php endif; ?>
+          </select>
+          <div class="help">Les séances seront ajustées à votre temps disponible.</div>
         </div>
 
         <!-- Matériel & contraintes -->
@@ -113,20 +146,6 @@ $active = 'programs';
         <div>
           <label for="contraintes">Blessures / contraintes</label>
           <textarea id="contraintes" name="contraintes" placeholder="Épaule fragile, lombaires, etc."></textarea>
-        </div>
-
-        <!-- Préférences -->
-        <div>
-          <label for="duree">Durée moyenne d'une séance (min)</label>
-          <select id="duree" name="duree">
-            <option value="">— Sélectionner —</option>
-            <option>30</option><option>45</option><option>60</option><option>75</option><option>90</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="preferences">Préférences (exos, styles, cardio...)</label>
-          <textarea id="preferences" name="preferences" placeholder="J'aime le full-body / push-pull-legs, HIIT léger, etc."></textarea>
         </div>
 
         <!-- Champ caché programme -->

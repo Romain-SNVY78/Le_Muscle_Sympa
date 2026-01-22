@@ -207,47 +207,36 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
   // Exercices de base par groupe musculaire
   $exercises = getExerciseBank($experience, $type, $objectif, $contraintes);
   
-  // PLANNING HEBDOMADAIRE
-  $schedule_html .= "<table style='width: 100%; border-collapse: collapse; margin: 15px 0;'>";
-  $schedule_html .= "<thead><tr style='background: #ff8000; color: white;'>";
+  // PLANNING PAR JOURS (Jour 1, Jour 2, etc.)
+  $schedule_html .= "<div style='background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;'>";
+  $schedule_html .= "<p style='margin: 0 0 10px; color: #666;'><strong>💡 Structure flexible :</strong> Répartissez ces séances selon vos disponibilités, en respectant au moins 48h de repos entre deux séances du même groupe musculaire.</p>";
+  $schedule_html .= "<ul style='list-style: none; padding: 0; margin: 0;'>";
   
   if ($split === 'full_body') {
-    $days = ['Lun', 'Mer', 'Ven'];
-    for ($i = 0; $i < 7; $i++) {
-      $schedule_html .= "<td style='padding: 10px; text-align: center; border: 1px solid #ddd;'>";
-      $schedule_html .= $dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][$i];
-      $schedule_html .= "</td>";
-    }
-    $schedule_html .= "</tr></thead><tbody><tr>";
-    for ($i = 0; $i < 7; $i++) {
-      $dayName = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'][$i];
-      if (in_array($dayName, $days)) {
-        $schedule_html .= "<td style='padding: 10px; background: #fff3e0; text-align: center; border: 1px solid #ddd;'><strong>Full Body</strong></td>";
-      } else {
-        $schedule_html .= "<td style='padding: 10px; text-align: center; border: 1px solid #ddd; color: #999;'>Repos</td>";
-      }
+    for ($i = 1; $i <= $frequence; $i++) {
+      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> Full Body</li>";
     }
   } elseif ($split === 'upper_lower') {
-    $schedule = ['Lun' => 'Upper', 'Mar' => 'Repos', 'Mer' => 'Lower', 'Jeu' => 'Repos', 'Ven' => 'Upper', 'Sam' => 'Repos', 'Dim' => 'Repos'];
-    foreach ($schedule as $day => $session) {
-      $bg = $session === 'Repos' ? '#f5f5f5' : '#fff3e0';
-      $color = $session === 'Repos' ? '#999' : '#111';
-      $schedule_html .= "<td style='padding: 10px; background: $bg; text-align: center; border: 1px solid #ddd; color: $color;'>";
-      $schedule_html .= $session === 'Repos' ? '✓ Repos' : "<strong>$session</strong>";
-      $schedule_html .= "</td>";
+    $pattern = ['Upper', 'Lower'];
+    for ($i = 1; $i <= $frequence; $i++) {
+      $session = $pattern[($i - 1) % 2];
+      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session Body</li>";
     }
   } elseif ($split === 'ppl') {
-    $schedule = ['Lun' => 'Push', 'Mar' => 'Pull', 'Mer' => 'Legs', 'Jeu' => 'Repos', 'Ven' => 'Push', 'Sam' => 'Pull', 'Dim' => 'Legs'];
-    foreach ($schedule as $day => $session) {
-      $bg = $session === 'Repos' ? '#f5f5f5' : '#fff3e0';
-      $color = $session === 'Repos' ? '#999' : '#111';
-      $schedule_html .= "<td style='padding: 10px; background: $bg; text-align: center; border: 1px solid #ddd; color: $color;'>";
-      $schedule_html .= $session === 'Repos' ? '✓ Repos' : "<strong>$session</strong>";
-      $schedule_html .= "</td>";
+    $pattern = ['Push', 'Pull', 'Legs'];
+    for ($i = 1; $i <= $frequence; $i++) {
+      $session = $pattern[($i - 1) % 3];
+      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session</li>";
+    }
+  } elseif ($split === 'upper_lower_x2') {
+    $pattern = ['Upper A', 'Lower A', 'Upper B', 'Lower B'];
+    for ($i = 1; $i <= $frequence; $i++) {
+      $session = $pattern[($i - 1) % 4];
+      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session</li>";
     }
   }
   
-  $schedule_html .= "</tr></tbody></table>";
+  $schedule_html .= "</ul></div>";
   
   // SÉANCES DÉTAILLÉES
   $sessions_data = getSessions($split, $exercises, $experience, $type, $objectif);
@@ -284,79 +273,274 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
 
 /**
  * Retourne les sessions d'entraînement détaillées
+ * Adapte les exercices selon le TYPE de programme (endurance, renforcement, etc.)
  */
 function getSessions($split, $exercises, $experience, $type, $objectif) {
   $sessions = [];
   
-  if ($split === 'full_body') {
+  // ENDURANCE : Focus cardio et circuits
+  if ($type === 'endurance') {
     $sessions[] = [
-      'name' => 'Séance Full Body A',
-      'duration' => 60,
+      'name' => 'Séance Cardio & Circuits 1',
+      'duration' => 45,
       'exercises' => [
-        ['name' => 'Squat / Leg Press', 'sets' => 3, 'reps' => '8-12', 'rest' => 120, 'notes' => 'Mouvement principal'],
-        ['name' => 'Développé couché / Push-up', 'sets' => 3, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Poitrine / Triceps'],
-        ['name' => 'Tirage / Rowing', 'sets' => 3, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Dos / Biceps'],
-        ['name' => 'Développé militaire', 'sets' => 2, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Épaules'],
-        ['name' => 'Curls / Extensions', 'sets' => 2, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Isolation'],
-        ['name' => 'Cardio léger', 'sets' => 1, 'reps' => '5-10 min', 'rest' => 0, 'notes' => 'Cool-down'],
-      ]
-    ];
-  } elseif ($split === 'upper_lower') {
-    $sessions[] = [
-      'name' => 'Upper Body',
-      'duration' => 60,
-      'exercises' => [
-        ['name' => 'Développé couché / Incline', 'sets' => 4, 'reps' => '6-10', 'rest' => 120, 'notes' => 'Force / Hypertrophie'],
-        ['name' => 'Tirage vertical / Horizontal', 'sets' => 4, 'reps' => '6-10', 'rest' => 120, 'notes' => 'Dos'],
-        ['name' => 'Développé militaire', 'sets' => 3, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Épaules'],
-        ['name' => 'Rowing barbell', 'sets' => 3, 'reps' => '8-10', 'rest' => 90, 'notes' => 'Épaisseur dos'],
-        ['name' => 'Curls / Triceps pushdown', 'sets' => 3, 'reps' => '10-15', 'rest' => 60, 'notes' => 'Isolation'],
+        ['name' => 'Échauffement cardio léger', 'sets' => 1, 'reps' => '5-10 min', 'rest' => 0, 'notes' => 'Montée progressive en intensité'],
+        ['name' => $exercises['cardio_principal'][0] ?? 'Course à pied', 'sets' => 1, 'reps' => '20-30 min', 'rest' => 0, 'notes' => 'Zone 65-75% FCmax'],
+        ['name' => $exercises['circuit_musculaire'][0] ?? 'Squat poids du corps', 'sets' => 3, 'reps' => '20-25', 'rest' => 30, 'notes' => 'Circuit léger'],
+        ['name' => $exercises['circuit_musculaire'][1] ?? 'Push-ups', 'sets' => 3, 'reps' => '15-20', 'rest' => 30, 'notes' => 'Circuit léger'],
+        ['name' => $exercises['gainage'][0] ?? 'Planche frontale', 'sets' => 3, 'reps' => '30-60s', 'rest' => 45, 'notes' => 'Gainage'],
+        ['name' => 'Retour au calme cardio', 'sets' => 1, 'reps' => '5-10 min', 'rest' => 0, 'notes' => 'Zone récupération'],
       ]
     ];
     $sessions[] = [
-      'name' => 'Lower Body',
-      'duration' => 60,
+      'name' => 'Séance HIIT Intense',
+      'duration' => 35,
       'exercises' => [
-        ['name' => 'Squat / Front squat', 'sets' => 4, 'reps' => '6-10', 'rest' => 150, 'notes' => 'Force / Quadriceps'],
-        ['name' => 'Soulevé de terre / Leg press', 'sets' => 3, 'reps' => '6-8', 'rest' => 150, 'notes' => 'Chaîne postérieure'],
-        ['name' => 'Leg curl / Extensions', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Ischio / Quad'],
-        ['name' => 'Calf raises / Mollets', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Mollets'],
+        ['name' => 'Échauffement dynamique', 'sets' => 1, 'reps' => '5-8 min', 'rest' => 0, 'notes' => 'Mobilisations articulaires'],
+        ['name' => $exercises['hiit'][0] ?? 'Burpees', 'sets' => 6, 'reps' => '30s work / 30s repos', 'rest' => 30, 'notes' => 'Haute intensité'],
+        ['name' => $exercises['hiit'][1] ?? 'Mountain climbers', 'sets' => 6, 'reps' => '30s work / 30s repos', 'rest' => 30, 'notes' => 'Cardio explosif'],
+        ['name' => $exercises['hiit'][2] ?? 'Jump squats', 'sets' => 5, 'reps' => '15-20', 'rest' => 45, 'notes' => 'Puissance jambes'],
+        ['name' => $exercises['gainage'][1] ?? 'Planche latérale', 'sets' => 2, 'reps' => '30s/côté', 'rest' => 30, 'notes' => 'Stabilité'],
+        ['name' => 'Stretching', 'sets' => 1, 'reps' => '5-10 min', 'rest' => 0, 'notes' => 'Récupération'],
       ]
     ];
-  } elseif ($split === 'ppl') {
-    $sessions[] = [
-      'name' => 'Push (Poitrine / Épaules / Triceps)',
-      'duration' => 60,
-      'exercises' => [
-        ['name' => 'Développé couché', 'sets' => 4, 'reps' => '6-10', 'rest' => 120, 'notes' => 'Principal'],
-        ['name' => 'Développé incline', 'sets' => 3, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Poitrine haute'],
-        ['name' => 'Développé militaire', 'sets' => 3, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Épaules'],
-        ['name' => 'Écartés / Fly', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Poitrine'],
-        ['name' => 'Triceps pushdown', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Isolation'],
-      ]
-    ];
-    $sessions[] = [
-      'name' => 'Pull (Dos / Biceps)',
-      'duration' => 60,
-      'exercises' => [
-        ['name' => 'Tirage menton / Lat pulldown', 'sets' => 4, 'reps' => '6-10', 'rest' => 120, 'notes' => 'Principal'],
-        ['name' => 'Rowing barbell', 'sets' => 3, 'reps' => '8-10', 'rest' => 90, 'notes' => 'Épaisseur'],
-        ['name' => 'Tirage vertical', 'sets' => 3, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Largeur'],
-        ['name' => 'Curls barbell', 'sets' => 3, 'reps' => '8-12', 'rest' => 75, 'notes' => 'Biceps'],
-        ['name' => 'Curl marteau', 'sets' => 2, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Brachial'],
-      ]
-    ];
-    $sessions[] = [
-      'name' => 'Legs (Jambes)',
-      'duration' => 65,
-      'exercises' => [
-        ['name' => 'Squat', 'sets' => 4, 'reps' => '6-10', 'rest' => 150, 'notes' => 'Principal'],
-        ['name' => 'Leg press', 'sets' => 3, 'reps' => '8-12', 'rest' => 120, 'notes' => 'Quadriceps'],
-        ['name' => 'Leg curl', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Ischio'],
-        ['name' => 'Extensions jambes', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Finition'],
-        ['name' => 'Calf raises', 'sets' => 4, 'reps' => '12-15', 'rest' => 45, 'notes' => 'Mollets'],
-      ]
-    ];
+    if ($split === 'full_body' || $split === 'upper_lower') {
+      $sessions[] = [
+        'name' => 'Séance Cardio Modéré',
+        'duration' => 40,
+        'exercises' => [
+          ['name' => $exercises['cardio_faible_impact'][0] ?? 'Marche rapide inclinée', 'sets' => 1, 'reps' => '30-40 min', 'rest' => 0, 'notes' => 'Zone 60-70% FCmax'],
+          ['name' => $exercises['circuit_musculaire'][3] ?? 'Rowing léger', 'sets' => 3, 'reps' => '15-20', 'rest' => 45, 'notes' => 'Haut du corps'],
+          ['name' => $exercises['gainage'][0] ?? 'Planche', 'sets' => 3, 'reps' => '40-60s', 'rest' => 60, 'notes' => 'Core'],
+        ]
+      ];
+    }
+  }
+  
+  // RENFORCEMENT / FORCE : Charges lourdes, faible volume
+  elseif ($type === 'renforcement' || $type === 'force') {
+    if ($split === 'full_body') {
+      $sessions[] = [
+        'name' => 'Full Body Force A',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['composes_principaux'][0] ?? 'Squat lourd', 'sets' => 5, 'reps' => '3-5', 'rest' => 180, 'notes' => 'Mouvement principal - 80-90% 1RM'],
+          ['name' => $exercises['force_haut_corps'][0] ?? 'Bench press', 'sets' => 5, 'reps' => '4-6', 'rest' => 180, 'notes' => 'Force poitrine'],
+          ['name' => $exercises['force_dos'][1] ?? 'Weighted pull-ups', 'sets' => 4, 'reps' => '4-6', 'rest' => 150, 'notes' => 'Force dos'],
+          ['name' => $exercises['force_haut_corps'][1] ?? 'Overhead press', 'sets' => 4, 'reps' => '5-8', 'rest' => 120, 'notes' => 'Épaules'],
+          ['name' => $exercises['assistance_force'][2] ?? 'Romanian deadlift', 'sets' => 3, 'reps' => '6-8', 'rest' => 120, 'notes' => 'Assistance'],
+        ]
+      ];
+    } elseif ($split === 'upper_lower') {
+      $sessions[] = [
+        'name' => 'Upper Force',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['force_haut_corps'][0] ?? 'Bench press', 'sets' => 5, 'reps' => '3-5', 'rest' => 180, 'notes' => 'Force maximale'],
+          ['name' => $exercises['force_haut_corps'][1] ?? 'Overhead press', 'sets' => 4, 'reps' => '5-8', 'rest' => 150, 'notes' => 'Force épaules'],
+          ['name' => $exercises['force_dos'][2] ?? 'Barbell row lourd', 'sets' => 4, 'reps' => '5-8', 'rest' => 150, 'notes' => 'Dos'],
+          ['name' => $exercises['force_dos'][1] ?? 'Weighted pull-ups', 'sets' => 4, 'reps' => '4-6', 'rest' => 150, 'notes' => 'Vertical'],
+          ['name' => $exercises['assistance_force'][1] ?? 'Close grip bench', 'sets' => 3, 'reps' => '6-8', 'rest' => 120, 'notes' => 'Triceps'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Lower Force',
+        'duration' => 65,
+        'exercises' => [
+          ['name' => $exercises['composes_principaux'][0] ?? 'Squat', 'sets' => 5, 'reps' => '3-5', 'rest' => 210, 'notes' => 'Squat principal - 85-90% 1RM'],
+          ['name' => $exercises['composes_principaux'][1] ?? 'Soulevé de terre', 'sets' => 4, 'reps' => '3-5', 'rest' => 210, 'notes' => 'Deadlift - force maximale'],
+          ['name' => $exercises['force_jambes'][3] ?? 'Bulgarian split squat lesté', 'sets' => 3, 'reps' => '6-8/jambe', 'rest' => 120, 'notes' => 'Unilatéral'],
+          ['name' => $exercises['force_jambes'][4] ?? 'Hip thrust lourd', 'sets' => 4, 'reps' => '6-8', 'rest' => 120, 'notes' => 'Fessiers'],
+          ['name' => $exercises['force_dos'][4] ?? 'Farmer walks', 'sets' => 4, 'reps' => '40-60m', 'rest' => 90, 'notes' => 'Grip & core'],
+        ]
+      ];
+    } elseif ($split === 'ppl') {
+      $sessions[] = [
+        'name' => 'Push Force',
+        'duration' => 55,
+        'exercises' => [
+          ['name' => $exercises['force_haut_corps'][0] ?? 'Bench press', 'sets' => 5, 'reps' => '4-6', 'rest' => 180, 'notes' => 'Force maximale'],
+          ['name' => $exercises['force_haut_corps'][1] ?? 'Overhead press', 'sets' => 4, 'reps' => '5-8', 'rest' => 150, 'notes' => 'Épaules'],
+          ['name' => $exercises['force_haut_corps'][4] ?? 'Dips lestés', 'sets' => 4, 'reps' => '5-8', 'rest' => 120, 'notes' => 'Composé poussée'],
+          ['name' => $exercises['assistance_force'][1] ?? 'Close grip bench', 'sets' => 3, 'reps' => '6-8', 'rest' => 120, 'notes' => 'Triceps'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Pull Force',
+        'duration' => 55,
+        'exercises' => [
+          ['name' => $exercises['composes_principaux'][1] ?? 'Soulevé de terre', 'sets' => 5, 'reps' => '3-5', 'rest' => 210, 'notes' => 'Deadlift principal'],
+          ['name' => $exercises['force_dos'][1] ?? 'Weighted pull-ups', 'sets' => 4, 'reps' => '4-6', 'rest' => 150, 'notes' => 'Vertical'],
+          ['name' => $exercises['force_dos'][2] ?? 'Barbell row lourd', 'sets' => 4, 'reps' => '5-8', 'rest' => 150, 'notes' => 'Horizontal'],
+          ['name' => $exercises['force_dos'][3] ?? 'Rack pulls', 'sets' => 3, 'reps' => '4-6', 'rest' => 150, 'notes' => 'Surcharge'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Legs Force',
+        'duration' => 65,
+        'exercises' => [
+          ['name' => $exercises['force_jambes'][0] ?? 'Back squat lourd', 'sets' => 5, 'reps' => '3-5', 'rest' => 210, 'notes' => 'Principal'],
+          ['name' => $exercises['force_jambes'][2] ?? 'Leg press lourd', 'sets' => 4, 'reps' => '6-8', 'rest' => 150, 'notes' => 'Volume jambes'],
+          ['name' => $exercises['assistance_force'][2] ?? 'Romanian deadlift', 'sets' => 4, 'reps' => '6-8', 'rest' => 120, 'notes' => 'Ischio'],
+          ['name' => $exercises['force_jambes'][4] ?? 'Hip thrust lourd', 'sets' => 4, 'reps' => '6-8', 'rest' => 120, 'notes' => 'Fessiers'],
+        ]
+      ];
+    }
+  }
+  
+  // ESTHÉTIQUE / PRISE DE MASSE : Volume élevé, hypertrophie
+  elseif ($type === 'esthetique' || $objectif === 'prise_masse') {
+    if ($split === 'full_body') {
+      $sessions[] = [
+        'name' => 'Full Body Hypertrophie',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['jambes_quad'][0] ?? 'Squat', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Tempo contrôlé'],
+          ['name' => $exercises['poitrine_hypertrophie'][0] ?? 'Développé couché', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Hypertrophie poitrine'],
+          ['name' => $exercises['dos_largeur'][0] ?? 'Tirage vertical', 'sets' => 4, 'reps' => '8-12', 'rest' => 75, 'notes' => 'Largeur dos'],
+          ['name' => $exercises['epaules_hypertrophie'][0] ?? 'Développé militaire', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Épaules'],
+          ['name' => $exercises['bras_biceps'][0] ?? 'Curls barre', 'sets' => 3, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Biceps'],
+          ['name' => $exercises['bras_triceps'][1] ?? 'Triceps pushdown', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Triceps'],
+        ]
+      ];
+    } elseif ($split === 'upper_lower') {
+      $sessions[] = [
+        'name' => 'Upper Hypertrophie',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['poitrine_hypertrophie'][0] ?? 'Développé couché', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Poitrine'],
+          ['name' => $exercises['poitrine_hypertrophie'][1] ?? 'Développé incliné', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Haut pectoraux'],
+          ['name' => $exercises['dos_largeur'][0] ?? 'Tirage vertical', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Largeur'],
+          ['name' => $exercises['dos_epaisseur'][0] ?? 'Rowing barre', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Épaisseur'],
+          ['name' => $exercises['epaules_hypertrophie'][1] ?? 'Élévations latérales', 'sets' => 4, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Deltoïdes latéraux'],
+          ['name' => $exercises['bras_biceps'][1] ?? 'Curl haltères', 'sets' => 3, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Biceps'],
+          ['name' => $exercises['bras_triceps'][1] ?? 'Triceps pushdown', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Triceps'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Lower Hypertrophie',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['jambes_quad'][0] ?? 'Squat', 'sets' => 4, 'reps' => '8-12', 'rest' => 120, 'notes' => 'Quadriceps'],
+          ['name' => $exercises['jambes_quad'][1] ?? 'Leg press', 'sets' => 4, 'reps' => '10-15', 'rest' => 90, 'notes' => 'Volume jambes'],
+          ['name' => $exercises['jambes_ischio'][0] ?? 'Romanian deadlift', 'sets' => 4, 'reps' => '10-12', 'rest' => 90, 'notes' => 'Ischio'],
+          ['name' => $exercises['jambes_ischio'][1] ?? 'Leg curl', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Isolation ischio'],
+          ['name' => $exercises['jambes_quad'][3] ?? 'Extensions jambes', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Finition quad'],
+          ['name' => 'Mollets debout', 'sets' => 4, 'reps' => '15-20', 'rest' => 45, 'notes' => 'Mollets'],
+        ]
+      ];
+    } elseif ($split === 'ppl') {
+      $sessions[] = [
+        'name' => 'Push (Poitrine / Épaules / Triceps)',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['poitrine_hypertrophie'][0] ?? 'Développé couché', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Principal'],
+          ['name' => $exercises['poitrine_hypertrophie'][1] ?? 'Développé incliné', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Haut pecs'],
+          ['name' => $exercises['poitrine_hypertrophie'][3] ?? 'Cable fly', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Isolation'],
+          ['name' => $exercises['epaules_hypertrophie'][0] ?? 'Développé militaire', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Épaules'],
+          ['name' => $exercises['epaules_hypertrophie'][1] ?? 'Élévations latérales', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Deltoïdes'],
+          ['name' => $exercises['bras_triceps'][0] ?? 'Dips', 'sets' => 3, 'reps' => '8-12', 'rest' => 75, 'notes' => 'Triceps'],
+          ['name' => $exercises['bras_triceps'][1] ?? 'Triceps pushdown', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Isolation triceps'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Pull (Dos / Biceps)',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['dos_largeur'][2] ?? 'Pull-ups', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Largeur'],
+          ['name' => $exercises['dos_epaisseur'][0] ?? 'Rowing barre', 'sets' => 4, 'reps' => '8-12', 'rest' => 90, 'notes' => 'Épaisseur'],
+          ['name' => $exercises['dos_largeur'][1] ?? 'Lat pulldown', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Volume dos'],
+          ['name' => $exercises['dos_epaisseur'][3] ?? 'Dumbbell row', 'sets' => 3, 'reps' => '10-12', 'rest' => 75, 'notes' => 'Unilatéral'],
+          ['name' => $exercises['epaules_hypertrophie'][3] ?? 'Face pull', 'sets' => 3, 'reps' => '15-20', 'rest' => 60, 'notes' => 'Deltoïdes postérieurs'],
+          ['name' => $exercises['bras_biceps'][0] ?? 'Curls barre', 'sets' => 3, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Biceps'],
+          ['name' => $exercises['bras_biceps'][2] ?? 'Curl marteau', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Brachial'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Legs (Jambes)',
+        'duration' => 60,
+        'exercises' => [
+          ['name' => $exercises['jambes_quad'][0] ?? 'Squat', 'sets' => 4, 'reps' => '8-12', 'rest' => 120, 'notes' => 'Principal'],
+          ['name' => $exercises['jambes_quad'][1] ?? 'Leg press', 'sets' => 4, 'reps' => '10-15', 'rest' => 90, 'notes' => 'Volume'],
+          ['name' => $exercises['jambes_ischio'][0] ?? 'Romanian deadlift', 'sets' => 4, 'reps' => '10-12', 'rest' => 90, 'notes' => 'Ischio'],
+          ['name' => $exercises['jambes_ischio'][1] ?? 'Leg curl', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Isolation'],
+          ['name' => $exercises['jambes_quad'][3] ?? 'Extensions jambes', 'sets' => 3, 'reps' => '12-15', 'rest' => 60, 'notes' => 'Finition quad'],
+          ['name' => 'Mollets', 'sets' => 4, 'reps' => '15-20', 'rest' => 45, 'notes' => 'Mollets'],
+        ]
+      ];
+    }
+  }
+  
+  // ENTRETIEN / FORME : Mix équilibré
+  else {
+    if ($split === 'full_body') {
+      $sessions[] = [
+        'name' => 'Full Body Équilibré',
+        'duration' => 50,
+        'exercises' => [
+          ['name' => $exercises['composes_moderés'][0] ?? 'Squat goblet', 'sets' => 3, 'reps' => '10-15', 'rest' => 75, 'notes' => 'Jambes'],
+          ['name' => $exercises['composes_moderés'][1] ?? 'Push-ups', 'sets' => 3, 'reps' => '12-20', 'rest' => 60, 'notes' => 'Poitrine'],
+          ['name' => $exercises['composes_moderés'][2] ?? 'Rowing haltère', 'sets' => 3, 'reps' => '10-15', 'rest' => 60, 'notes' => 'Dos'],
+          ['name' => $exercises['fonctionnel'][0] ?? 'Kettlebell swings', 'sets' => 3, 'reps' => '15-20', 'rest' => 60, 'notes' => 'Fonctionnel'],
+          ['name' => $exercises['gainage_equilibre'][0] ?? 'Planche', 'sets' => 3, 'reps' => '30-60s', 'rest' => 45, 'notes' => 'Core'],
+          ['name' => $exercises['cardio_modere'][0] ?? 'Course légère', 'sets' => 1, 'reps' => '10-15 min', 'rest' => 0, 'notes' => 'Cardio'],
+        ]
+      ];
+    } elseif ($split === 'upper_lower') {
+      $sessions[] = [
+        'name' => 'Upper Body Entretien',
+        'duration' => 50,
+        'exercises' => [
+          ['name' => $exercises['composes_moderés'][1] ?? 'Push-ups', 'sets' => 3, 'reps' => '15-20', 'rest' => 60, 'notes' => 'Poussée'],
+          ['name' => $exercises['composes_moderés'][2] ?? 'Rowing', 'sets' => 3, 'reps' => '10-15', 'rest' => 60, 'notes' => 'Tirage'],
+          ['name' => $exercises['composes_moderés'][4] ?? 'Développé épaules', 'sets' => 3, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Épaules'],
+          ['name' => $exercises['fonctionnel'][3] ?? 'TRX rows', 'sets' => 3, 'reps' => '12-15', 'rest' => 45, 'notes' => 'Fonctionnel'],
+          ['name' => $exercises['gainage_equilibre'][0] ?? 'Planche', 'sets' => 3, 'reps' => '30-45s', 'rest' => 45, 'notes' => 'Gainage'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Lower Body Entretien',
+        'duration' => 50,
+        'exercises' => [
+          ['name' => $exercises['composes_moderés'][0] ?? 'Squat goblet', 'sets' => 3, 'reps' => '12-15', 'rest' => 75, 'notes' => 'Jambes'],
+          ['name' => $exercises['composes_moderés'][3] ?? 'Fentes', 'sets' => 3, 'reps' => '12-15/jambe', 'rest' => 60, 'notes' => 'Unilatéral'],
+          ['name' => $exercises['fonctionnel'][0] ?? 'Kettlebell swings', 'sets' => 3, 'reps' => '15-20', 'rest' => 60, 'notes' => 'Chaîne postérieure'],
+          ['name' => $exercises['gainage_equilibre'][3] ?? 'Single leg deadlift', 'sets' => 3, 'reps' => '10-12/jambe', 'rest' => 60, 'notes' => 'Équilibre'],
+          ['name' => $exercises['cardio_modere'][1] ?? 'Vélo', 'sets' => 1, 'reps' => '15-20 min', 'rest' => 0, 'notes' => 'Cardio modéré'],
+        ]
+      ];
+    } elseif ($split === 'ppl') {
+      $sessions[] = [
+        'name' => 'Push Entretien',
+        'duration' => 45,
+        'exercises' => [
+          ['name' => $exercises['composes_moderés'][1] ?? 'Push-ups', 'sets' => 4, 'reps' => '15-20', 'rest' => 60, 'notes' => 'Poitrine'],
+          ['name' => $exercises['composes_moderés'][4] ?? 'Développé épaules', 'sets' => 3, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Épaules'],
+          ['name' => 'Dips assistés', 'sets' => 3, 'reps' => '10-15', 'rest' => 60, 'notes' => 'Triceps'],
+          ['name' => $exercises['gainage_equilibre'][0] ?? 'Planche', 'sets' => 3, 'reps' => '30-45s', 'rest' => 45, 'notes' => 'Core'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Pull Entretien',
+        'duration' => 45,
+        'exercises' => [
+          ['name' => $exercises['composes_moderés'][2] ?? 'Rowing', 'sets' => 4, 'reps' => '10-15', 'rest' => 60, 'notes' => 'Dos'],
+          ['name' => 'Tirage vertical léger', 'sets' => 3, 'reps' => '10-12', 'rest' => 60, 'notes' => 'Largeur'],
+          ['name' => 'Curls modérés', 'sets' => 3, 'reps' => '12-15', 'rest' => 45, 'notes' => 'Biceps'],
+          ['name' => $exercises['fonctionnel'][3] ?? 'TRX rows', 'sets' => 3, 'reps' => '12-15', 'rest' => 45, 'notes' => 'Fonctionnel'],
+        ]
+      ];
+      $sessions[] = [
+        'name' => 'Legs Entretien',
+        'duration' => 45,
+        'exercises' => [
+          ['name' => $exercises['composes_moderés'][0] ?? 'Squat goblet', 'sets' => 3, 'reps' => '12-15', 'rest' => 75, 'notes' => 'Jambes'],
+          ['name' => $exercises['composes_moderés'][3] ?? 'Fentes', 'sets' => 3, 'reps' => '12-15/jambe', 'rest' => 60, 'notes' => 'Unilatéral'],
+          ['name' => $exercises['fonctionnel'][0] ?? 'Kettlebell swings', 'sets' => 3, 'reps' => '15-20', 'rest' => 60, 'notes' => 'Fonctionnel'],
+          ['name' => $exercises['cardio_modere'][2] ?? 'Rameur', 'sets' => 1, 'reps' => '10-15 min', 'rest' => 0, 'notes' => 'Cardio']
+        ]
+      ];
+    }
   }
   
   return $sessions;
@@ -428,16 +612,63 @@ function formatObjectif($obj) {
 }
 
 /**
- * Banque d'exercices personnalisée
+ * Banque d'exercices personnalisée selon le TYPE de programme
  */
 function getExerciseBank($experience, $type, $objectif, $contraintes) {
-  // Exercices simples adaptés au niveau
+  // ENDURANCE : Focus cardio et circuits
+  if ($type === 'endurance') {
+    return [
+      'cardio_principal' => ['Course à pied (20-40 min)', 'Vélo elliptique (25-35 min)', 'Rameur (15-30 min)', 'Corde à sauter (10-20 min)', 'Vélo stationnaire (30-45 min)'],
+      'hiit' => ['Burpees (30s work / 15s repos x8)', 'Mountain climbers (30s/15s x8)', 'Jump squats (20 reps x5)', 'Sprint intervals (30s sprint / 90s repos x6)', 'Kettlebell swings (20 reps x5)'],
+      'circuit_musculaire' => ['Squat poids du corps (20-30 reps)', 'Push-ups (15-25 reps)', 'Fentes alternées (20-30 reps)', 'Rowing léger (15-20 reps)', 'Jumping jacks (30-60s)'],
+      'cardio_faible_impact' => ['Marche rapide inclinée (30-45 min)', 'Natation (20-40 min)', 'Aquagym (30-45 min)', 'Vélo allongé (30-40 min)', 'Step machine (20-30 min)'],
+      'gainage' => ['Planche frontale (30-90s x3)', 'Planche latérale (20-60s x3)', 'Dead bug (15 reps x3)', 'Bird dog (12 reps/côté x3)', 'Hollow body hold (20-45s x3)']
+    ];
+  }
+  
+  // RENFORCEMENT : Focus force pure et charges lourdes
+  if ($type === 'renforcement' || $type === 'force') {
+    return [
+      'composes_principaux' => ['Squat (4-6 reps)', 'Soulevé de terre (3-5 reps)', 'Développé couché (4-6 reps)', 'Développé militaire (5-8 reps)', 'Front squat (5-8 reps)'],
+      'force_jambes' => ['Back squat lourd (3-5 reps)', 'Deadlift conventionnel (3-5 reps)', 'Leg press charges lourdes (6-8 reps)', 'Bulgarian split squat lesté (6-8 reps)', 'Hip thrust lourd (6-8 reps)'],
+      'force_haut_corps' => ['Bench press (4-6 reps)', 'Overhead press (5-8 reps)', 'Weighted pull-ups (4-6 reps)', 'Barbell rowing (5-8 reps)', 'Dips lestés (5-8 reps)'],
+      'force_dos' => ['Deadlift (3-5 reps)', 'Weighted pull-ups (4-6 reps)', 'Barbell row lourd (5-8 reps)', 'Rack pulls (4-6 reps)', 'Farmer walks (40-60m x4)'],
+      'assistance_force' => ['Pause squat (5-8 reps)', 'Close grip bench (6-8 reps)', 'Romanian deadlift (6-8 reps)', 'Floor press (6-8 reps)', 'Safety bar squat (6-8 reps)']
+    ];
+  }
+  
+  // ESTHÉTIQUE : Focus hypertrophie et volume
+  if ($type === 'esthetique' || $objectif === 'prise_masse') {
+    return [
+      'poitrine_hypertrophie' => ['Développé couché (8-12 reps)', 'Développé incliné (8-12 reps)', 'Écartés haltères (12-15 reps)', 'Cable fly (12-15 reps)', 'Push-ups (15-20 reps)'],
+      'dos_largeur' => ['Tirage vertical (8-12 reps)', 'Lat pulldown (10-12 reps)', 'Pull-ups (8-15 reps)', 'Straight arm pulldown (12-15 reps)', 'Machine row (10-12 reps)'],
+      'dos_epaisseur' => ['Rowing barre (8-12 reps)', 'T-bar row (10-12 reps)', 'Seal row (10-12 reps)', 'Dumbbell row (10-12 reps)', 'Cable row (12-15 reps)'],
+      'jambes_quad' => ['Squat (8-12 reps)', 'Leg press (10-15 reps)', 'Hack squat (10-12 reps)', 'Extensions jambes (12-15 reps)', 'Fentes marchées (12-15/jambe)'],
+      'jambes_ischio' => ['Romanian deadlift (10-12 reps)', 'Leg curl (12-15 reps)', 'Glute ham raise (8-12 reps)', 'Nordic curls (6-10 reps)', 'Hip thrust (12-15 reps)'],
+      'epaules_hypertrophie' => ['Développé militaire (8-12 reps)', 'Élévations latérales (12-15 reps)', 'Oiseau (12-15 reps)', 'Face pull (15-20 reps)', 'Arnold press (10-12 reps)'],
+      'bras_biceps' => ['Curls barre (10-12 reps)', 'Curl haltères (10-12 reps)', 'Curl marteau (12-15 reps)', 'Curl pupitre (10-12 reps)', 'Cable curl (12-15 reps)'],
+      'bras_triceps' => ['Dips (8-12 reps)', 'Triceps pushdown (12-15 reps)', 'Overhead extension (10-12 reps)', 'Close grip bench (8-10 reps)', 'Kickbacks (12-15 reps)']
+    ];
+  }
+  
+  // ENTRETIEN : Équilibre force/cardio
+  if ($type === 'entretien' || $type === 'forme') {
+    return [
+      'composes_moderés' => ['Squat goblet (10-15 reps)', 'Push-ups (12-20 reps)', 'Rowing haltère (10-15 reps)', 'Fentes (12-15/jambe)', 'Développé épaules (10-12 reps)'],
+      'cardio_modere' => ['Course légère (15-25 min)', 'Vélo (20-30 min)', 'Rameur (10-20 min)', 'Marche rapide (25-35 min)', 'Natation (15-25 min)'],
+      'fonctionnel' => ['Kettlebell swings (15-20 reps)', 'Farmer walks (30-50m)', 'Medicine ball slams (12-15 reps)', 'TRX rows (12-15 reps)', 'Box step-ups (12-15/jambe)'],
+      'mobilite' => ['Étirements dynamiques (5-10 min)', 'Yoga flow (15-20 min)', 'Foam rolling (5-10 min)', 'Cat-cow (15 reps)', 'Hip circles (10-15/direction)'],
+      'gainage_equilibre' => ['Planche (30-60s x3)', 'Side plank (20-40s/côté)', 'Superman (12-15 reps x3)', 'Single leg deadlift (10-12/jambe)', 'Pallof press (12-15 reps)']
+    ];
+  }
+  
+  // Par défaut : mix équilibré
   return [
-    'poitrine' => ['Développé couché', 'Développé décliné', 'Écartés machine', 'Push-ups'],
-    'dos' => ['Tirage vertical', 'Tirage horizontal', 'Rowing', 'Tirage menton'],
-    'jambes' => ['Squat', 'Leg press', 'Hack squat', 'Leg curl'],
-    'epaules' => ['Développé militaire', 'Développé assis', 'Élévations latérales', 'Shrugs'],
-    'bras' => ['Curls barbell', 'Curls haltères', 'Triceps dips', 'Triceps pushdown']
+    'poitrine' => ['Développé couché (8-12 reps)', 'Push-ups (12-20 reps)', 'Développé incliné (10-12 reps)', 'Écartés (12-15 reps)'],
+    'dos' => ['Tirage vertical (10-12 reps)', 'Rowing (10-12 reps)', 'Pull-ups (6-12 reps)', 'Face pull (15-20 reps)'],
+    'jambes' => ['Squat (8-12 reps)', 'Leg press (10-15 reps)', 'Leg curl (12-15 reps)', 'Extensions (12-15 reps)'],
+    'epaules' => ['Développé militaire (8-12 reps)', 'Élévations latérales (12-15 reps)', 'Shrugs (12-15 reps)'],
+    'cardio' => ['Course (20 min)', 'Vélo (20 min)', 'Rameur (15 min)', 'Corde à sauter (10 min)']
   ];
 }
 ?>
