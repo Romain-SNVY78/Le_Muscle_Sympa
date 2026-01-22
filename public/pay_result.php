@@ -207,40 +207,24 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
   // Exercices de base par groupe musculaire
   $exercises = getExerciseBank($experience, $type, $objectif, $contraintes);
   
-  // PLANNING PAR JOURS (Jour 1, Jour 2, etc.)
+  // RÉCUPÉRER LES SÉANCES POUR AFFICHER LES VRAIS NOMS DANS LE PLANNING
+  $sessions_data = getSessions($split, $exercises, $experience, $type, $objectif);
+  
+  // PLANNING PAR JOURS (Jour 1, Jour 2, etc.) - Avec les vrais noms de séances
   $schedule_html .= "<div style='background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;'>";
   $schedule_html .= "<p style='margin: 0 0 10px; color: #666;'><strong>💡 Structure flexible :</strong> Répartissez ces séances selon vos disponibilités, en respectant au moins 48h de repos entre deux séances du même groupe musculaire.</p>";
   $schedule_html .= "<ul style='list-style: none; padding: 0; margin: 0;'>";
   
-  if ($split === 'full_body') {
-    for ($i = 1; $i <= $frequence; $i++) {
-      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> Full Body</li>";
-    }
-  } elseif ($split === 'upper_lower') {
-    $pattern = ['Upper', 'Lower'];
-    for ($i = 1; $i <= $frequence; $i++) {
-      $session = $pattern[($i - 1) % 2];
-      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session Body</li>";
-    }
-  } elseif ($split === 'ppl') {
-    $pattern = ['Push', 'Pull', 'Legs'];
-    for ($i = 1; $i <= $frequence; $i++) {
-      $session = $pattern[($i - 1) % 3];
-      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session</li>";
-    }
-  } elseif ($split === 'upper_lower_x2') {
-    $pattern = ['Upper A', 'Lower A', 'Upper B', 'Lower B'];
-    for ($i = 1; $i <= $frequence; $i++) {
-      $session = $pattern[($i - 1) % 4];
-      $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session</li>";
-    }
+  // Afficher les séances en fonction de la fréquence demandée
+  for ($i = 1; $i <= $frequence; $i++) {
+    $session_index = ($i - 1) % count($sessions_data);
+    $session_name = $sessions_data[$session_index]['name'];
+    $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session_name</li>";
   }
   
   $schedule_html .= "</ul></div>";
   
   // SÉANCES DÉTAILLÉES
-  $sessions_data = getSessions($split, $exercises, $experience, $type, $objectif);
-  
   foreach ($sessions_data as $session) {
     $sessions_html .= "<div style='background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ff8000;'>";
     $sessions_html .= "<h4 style='margin: 0 0 10px; color: #111;'>" . $session['name'] . " (" . $session['duration'] . "min)</h4>";
