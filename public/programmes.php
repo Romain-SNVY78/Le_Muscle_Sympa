@@ -24,6 +24,10 @@ $active = 'programs';
   <p>Du renforcement musculaire à l'endurance, trouvez le programme qui vous convient.</p>
 </section>
 
+<div class="image-container">
+  <img src="assets/img/programme.jpg" alt="Programmes de musculation et endurance" />
+</div>
+
 <div class="wrap">
   <div class="intro" style="display:none;">
     <small>Du renforcement musculaire à l’endurance</small>
