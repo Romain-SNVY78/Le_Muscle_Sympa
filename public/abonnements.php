@@ -5,21 +5,17 @@ $active = 'plans';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
-<link rel="stylesheet" href="assets/css/base.css">
-<link rel="stylesheet" href="assets/css/header.css">
-
 <head>
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/header.css">
   <meta charset="UTF-8" />
   <title>Abonnements - Le Muscle Sympa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <link rel="stylesheet" href="assets/css/abonnements.css?v=2">
 </head>
 <body>
 
   <?php include __DIR__ . '/../views/partials/header.php'; ?>
-  <link rel="stylesheet" href="assets/css/abonnements.css">
 
   <section class="hero-section">
     <span class="tag">Nos formules d'abonnement</span>
