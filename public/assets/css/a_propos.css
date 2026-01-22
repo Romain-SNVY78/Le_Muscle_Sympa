@@ -16,8 +16,8 @@
     body{
       font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(1200px 800px at 10% -10%, rgba(255,128,0,0.15), transparent),
-        radial-gradient(1200px 800px at 110% 10%, rgba(255,128,0,0.12), transparent),
+        radial-gradient(1200px 800px at 10% -10%, rgba(255,128,0,0.12), transparent),
+        radial-gradient(1200px 800px at 110% 10%, rgba(255,128,0,0.1), transparent),
         var(--bg);
       color: var(--text);
       line-height: 1.6;

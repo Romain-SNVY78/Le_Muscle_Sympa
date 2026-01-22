@@ -3,12 +3,14 @@
 /* ===== Variables / base (reprend tes couleurs globales) ===== */
 :root{
   --orange:#ff8000; --orange-dark:#cc6600;
-  --bg:#222; --panel:#2b2b2b; --text:#fff; --muted:#cfcfcf;
+  --bg:#111; --panel:#1a1a1a; --text:#fff; --muted:#cfcfcf;
   --glass:rgba(255,255,255,.06); --glass-bd:rgba(255,255,255,.12);
-  /* si défini dans header.css, on le réutilise; sinon fallback 72px */
   --header-h: 72px;
 }
-html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+html,body{margin:0;padding:0;background:
+  radial-gradient(1200px 800px at 10% -10%, rgba(255,128,0,0.12), transparent),
+  radial-gradient(1200px 800px at 110% 10%, rgba(255,128,0,0.1), transparent),
+  var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
 
 /* Laisse un espace sous la barre fixe */
 .page-programmes,
@@ -20,10 +22,42 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:
 /* ===== Titre / chapeau (optionnel pour version "nouvelle") ===== */
 .intro{ text-align:center;margin:28px 0 22px }
 .intro small{
-  display:block;color:#d2a676;letter-spacing:.15em;font-weight:800;text-transform:uppercase;margin-bottom:10px
+  display:block;color:var(--orange);letter-spacing:.15em;font-weight:800;text-transform:uppercase;margin-bottom:10px;font-size:12px
 }
 .intro h1{ margin:0;color:var(--orange);font-size:40px;line-height:1.15 }
 @media (max-width:900px){ .intro h1{font-size:30px} }
+
+/* HERO SECTION */
+.hero-section {
+  text-align: center;
+  padding: 50px 20px;
+  margin-top: 0;
+}
+.hero-section .tag {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--orange), #ffa449);
+  color: #111;
+  font-weight: 800;
+  letter-spacing: .4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, .15);
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.hero-section h1 {
+  margin: 0;
+  color: var(--orange);
+  font-size: 40px;
+  line-height: 1.2;
+}
+.hero-section p {
+  margin: 12px auto 0;
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 800px;
+}
 
 /* ===============================================================
    1) VERSION "NOUVELLES CLASSES" (grid/card/badge/list/cta)

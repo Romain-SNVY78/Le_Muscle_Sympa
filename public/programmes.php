@@ -18,8 +18,14 @@ $active = 'programs';
 <link rel="stylesheet" href="assets/css/programmes.css">
 <?php include __DIR__ . '/../views/partials/header.php'; ?>
 
+<section class="hero-section">
+  <span class="tag">Programmes personnalisés</span>
+  <h1>Choisissez votre objectif et obtenez des résultats rapides</h1>
+  <p>Du renforcement musculaire à l'endurance, trouvez le programme qui vous convient.</p>
+</section>
+
 <div class="wrap">
-  <div class="intro">
+  <div class="intro" style="display:none;">
     <small>Du renforcement musculaire à l’endurance</small>
     <h1>Choisissez votre objectif et obtenez des résultats rapides.</h1>
   </div>

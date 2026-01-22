@@ -21,8 +21,14 @@ $active = 'plans';
   <?php include __DIR__ . '/../views/partials/header.php'; ?>
   <link rel="stylesheet" href="assets/css/abonnements.css">
 
-  <h1 class="main-title">Le Muscle Sympa</h1>
-  <p class="main-subtitle">Choisis la formule qui te convient — simple, claire et sans surprise.</p>
+  <section class="hero-section">
+    <span class="tag">Nos formules d'abonnement</span>
+    <h1>Rejoins Le Muscle Sympa</h1>
+    <p>Choisis la formule qui te convient — simple, claire et sans surprise.</p>
+  </section>
+
+  <h1 class="main-title" style="display:none;">Le Muscle Sympa</h1>
+  <p class="main-subtitle" style="display:none;">Choisis la formule qui te convient — simple, claire et sans surprise.</p>
 
   <div class="image-container">
     <img src="assets/img/abonnement.jpg" alt="Groupe à la salle de sport" />
