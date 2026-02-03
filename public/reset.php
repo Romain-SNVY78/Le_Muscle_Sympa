@@ -98,14 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="hidden" name="selector" value="<?= htmlspecialchars($selector) ?>">
         <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
 
-        <label for="password">Nouveau mot de passe</label>
+        <label for="password" style="margin-top: 20px;">Nouveau mot de passe</label>
         <input id="password" name="password" type="password" required minlength="6" placeholder="••••••••">
 
-        <label for="password2">Confirmer le mot de passe</label>
+        <label for="password2" style="margin-top: 20px;">Confirmer le mot de passe</label>
         <input id="password2" name="password2" type="password" required minlength="6" placeholder="••••••••">
 
-        <?php if ($error): ?><div class="alert"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-        <div class="actions">
+        <?php if ($error): ?><div class="alert" style="margin-top: 20px;"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <div class="actions" style="margin-top: 30px;">
           <button class="btn" type="submit">Mettre à jour</button>
           <a class="btn secondary" href="auth.php">Annuler</a>
         </div>

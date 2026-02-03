@@ -51,31 +51,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $verifier
       );
 
-      // ---- Option A : mail() simple (OK si serveur SMTP local est configuré) ----
-      $subject = 'Réinitialisation de votre mot de passe';
-      $message = "Bonjour,\n\nVoici le lien pour réinitialiser votre mot de passe (valide 30 minutes) :\n$resetLink\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet email.";
-      $headers = "From: no-reply@lemusclesympa.local\r\nContent-Type: text/plain; charset=UTF-8\r\n";
-      @mail($email, $subject, $message, $headers);
+      // ---- Envoi avec PHPMailer + SendGrid ----
+      try {
+        require __DIR__.'/../app/email-config.php';
+        require __DIR__.'/../vendor/phpmailer/src/PHPMailer.php';
+        require __DIR__.'/../vendor/phpmailer/src/SMTP.php';
+        require __DIR__.'/../vendor/phpmailer/src/Exception.php';
+        
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = SMTP_HOST;
+        $mail->SMTPAuth = true;
+        $mail->Username = SMTP_USERNAME;
+        $mail->Password = SMTP_PASSWORD;
+        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = SMTP_PORT;
 
-      // ---- Option B : PHPMailer (recommandé) ----
-      // (décommente et configure si besoin)
-      /*
-      require __DIR__.'/../vendor/autoload.php';
-      $mail = new PHPMailer\PHPMailer\PHPMailer(true);
-      $mail->isSMTP();
-      $mail->Host = 'smtp.votreserveur.com';
-      $mail->SMTPAuth = true;
-      $mail->Username = 'utilisateur';
-      $mail->Password = 'motdepasse';
-      $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-      $mail->Port = 587;
-
-      $mail->setFrom('no-reply@lemusclesympa.fr', 'Le Muscle Sympa');
-      $mail->addAddress($email);
-      $mail->Subject = $subject;
-      $mail->Body = $message;
-      $mail->send();
-      */
+        $mail->setFrom(SMTP_FROM_EMAIL, SMTP_FROM_NAME);
+        $mail->addAddress($email);
+        $mail->addReplyTo(SMTP_FROM_EMAIL, 'Support Le Muscle Sympa');
+        
+        $mail->Subject = 'Réinitialisation de votre mot de passe - Le Muscle Sympa';
+        $mail->CharSet = 'UTF-8';
+        $mail->isHTML(true);
+        
+        $mail->Body = "
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #ff8000; color: white; padding: 20px; text-align: center; }
+            .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+            .button { display: inline-block; padding: 12px 30px; background: #ff8000; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class='container'>
+            <div class='header'>
+              <h1>Le Muscle Sympa</h1>
+            </div>
+            <div class='content'>
+              <h2>Réinitialisation de votre mot de passe</h2>
+              <p>Bonjour,</p>
+              <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe :</p>
+              <p style='text-align: center;'>
+                <a href='$resetLink' class='button'>Réinitialiser mon mot de passe</a>
+              </p>
+              <p><strong>Ce lien est valide pendant 30 minutes.</strong></p>
+              <p>Si le bouton ne fonctionne pas, copiez et collez ce lien dans votre navigateur :</p>
+              <p style='word-break: break-all; font-size: 12px; color: #666;'>$resetLink</p>
+              <hr style='margin: 30px 0; border: none; border-top: 1px solid #ddd;'>
+              <p style='font-size: 14px; color: #666;'>
+                <strong>Vous n'avez pas demandé cette réinitialisation ?</strong><br>
+                Ignorez simplement cet email. Votre mot de passe actuel reste inchangé.
+              </p>
+            </div>
+            <div class='footer'>
+              <p>© 2026 Le Muscle Sympa - Tous droits réservés</p>
+              <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            </div>
+          </div>
+        </body>
+        </html>";
+        
+        // Version texte brut (fallback)
+        $mail->AltBody = "Bonjour,\n\nVous avez demandé à réinitialiser votre mot de passe sur Le Muscle Sympa.\n\nCliquez sur ce lien pour créer un nouveau mot de passe (valide 30 minutes) :\n$resetLink\n\nSi vous n'avez pas demandé cette réinitialisation, ignorez simplement cet email.\n\nCordialement,\nL'équipe Le Muscle Sympa";
+        
+        $mail->send();
+      } catch (Exception $e) {
+        error_log("Erreur envoi email: " . $mail->ErrorInfo);
+      }
     }
     // Toujours “succès” côté UI
     $sent = true;
