@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../app/db.php';
+require_once __DIR__ . '/../app/helpers.php';
 
 /* --- Flash message poussé par une redirection (ex : vouloir payer sans être connecté) --- */
 $flash_error = $_SESSION['flash_error'] ?? null;
@@ -9,12 +10,6 @@ unset($_SESSION['flash_error']); // on consomme le flash
 /* --- Si un 'next' est fourni en GET, on le mémorise pour la reprise après login --- */
 if (!empty($_GET['next'])) {
   $_SESSION['auth_next'] = $_GET['next'];
-}
-
-/* Map libellé d'abonnement */
-function plan_label($code) {
-  $m = ['solo'=>'SOLO','solo+'=>'SOLO +','duo'=>'DUO','duo+'=>'DUO +'];
-  return isset($m[$code]) ? $m[$code] : '—';
 }
 
 $errors  = [];
@@ -29,8 +24,20 @@ if (!empty($_GET['need_login'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $action = $_POST['action'] ?? '';
 
+  // Protection anti-spam (honeypot)
+  if (honeypot_check()) {
+    error_log('Bot détecté via honeypot');
+    header('Location: auth.php');
+    exit;
+  }
+
+  // Protection rate limiting
+  if (!rate_limit_check('auth_form', 5, 60)) {
+    $errors[] = "Trop de tentatives. Veuillez patienter une minute.";
+  }
+
   /* ---------------------- INSCRIPTION ---------------------- */
-  if ($action === 'register') {
+  if ($action === 'register' && empty($errors)) {
     $tab = 'register';
 
     $first_name = trim($_POST['first_name'] ?? '');
@@ -68,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   /* ------------------------ CONNEXION ------------------------ */
-  if ($action === 'login') {
+  if ($action === 'login' && empty($errors)) {
     $tab = 'login';
 
     $email    = strtolower(trim($_POST['email'] ?? ''));
@@ -172,6 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="hidden" name="action" value="login">
         <!-- véhicule la prochaine destination si on en a une -->
         <input type="hidden" name="next" value="<?php echo htmlspecialchars($_SESSION['auth_next'] ?? ($_GET['next'] ?? '')); ?>">
+        <?php echo honeypot_field(); ?>
         <div class="row">
           <div>
             <label for="login-email">Email</label>
@@ -197,6 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card" id="pane-register" style="display:none; margin-top:16px;">
       <form method="post" action="auth.php">
         <input type="hidden" name="action" value="register">
+        <?php echo honeypot_field(); ?>
         <div class="row">
           <div><label for="first_name">Prénom</label><input id="first_name" name="first_name" required></div>
           <div><label for="last_name">Nom</label><input id="last_name" name="last_name" required></div>

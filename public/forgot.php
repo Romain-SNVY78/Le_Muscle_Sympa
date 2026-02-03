@@ -2,12 +2,24 @@
 // public/forgot.php
 session_start();
 require_once __DIR__ . '/../app/db.php';
+require_once __DIR__ . '/../app/helpers.php';
 
 $sent = false;
+$error = null;
 
 // Ne jamais révéler si l'email existe ou non.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $email = strtolower(trim($_POST['email'] ?? ''));
+  // Protection anti-spam (honeypot)
+  if (honeypot_check()) {
+    error_log('Bot détecté via honeypot sur forgot.php');
+    $sent = true; // Faire croire au bot que ça a marché
+  }
+  // Protection rate limiting
+  elseif (!rate_limit_check('forgot_password', 3, 300)) {
+    $error = "Trop de tentatives. Veuillez patienter 5 minutes.";
+  }
+  else {
+    $email = strtolower(trim($_POST['email'] ?? ''));
 
   if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
     // 1) Chercher l'utilisateur (silencieusement)
@@ -69,8 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sent = true;
   } else {
     $sent = true; // même traitement pour ne pas divulguer
-  }
-}
+  }  }}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -89,13 +100,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="wrap">
   <h1>Mot de passe oublié</h1>
   <div class="card">
-    <?php if ($sent): ?>
+    <?php if ($error): ?>
+      <div class="alert"><?php echo htmlspecialchars($error); ?></div>
+      <div class="actions">
+        <a class="btn" href="auth.php">Retour à la connexion</a>
+      </div>
+    <?php elseif ($sent): ?>
       <div class="alert">Si un compte existe pour cette adresse, un email vient d’être envoyé avec les instructions.</div>
       <div class="actions">
         <a class="btn" href="auth.php">Retour à la connexion</a>
       </div>
     <?php else: ?>
       <form method="post" action="forgot.php" novalidate>
+        <?php echo honeypot_field(); ?>
         <label for="email">Votre adresse e-mail</label>
         <input id="email" name="email" type="email" required placeholder="vous@example.com">
         <div class="actions">
