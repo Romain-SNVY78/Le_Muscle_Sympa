@@ -131,21 +131,21 @@ function generateProgram($type, $data) {
   $contraintes = $data['contraintes'] ?? '';
   $equip = $data['equip'] ?? 'haltères, barres';
   
-  $html = "<div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>";
+  $html = "<div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #ffffff; padding: 20px; border-radius: 8px;'>";
   
   // HEADER
-  $html .= "<h2 style='border-bottom: 2px solid #ff8000; padding-bottom: 10px; color: #111;'>";
+  $html .= "<h2 style='border-bottom: 2px solid #ff8000; padding-bottom: 10px; color: #ff8000;'>";
   $html .= "📋 Programme personnalisé - " . htmlspecialchars($types[$type] ?? $type);
   $html .= "</h2>";
   
   // INFOS CLIENT
-  $html .= "<div style='background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;'>";
-  $html .= "<p style='margin: 5px 0;'><strong>👤 Client:</strong> " . htmlspecialchars($data['prenom'] ?? 'N/A') . " (" . (int)($data['age'] ?? 0) . " ans)</p>";
-  $html .= "<p style='margin: 5px 0;'><strong>🎯 Objectif:</strong> " . htmlspecialchars(formatObjectif($objectif)) . "</p>";
-  $html .= "<p style='margin: 5px 0;'><strong>💪 Niveau:</strong> " . htmlspecialchars(ucfirst($experience)) . "</p>";
-  $html .= "<p style='margin: 5px 0;'><strong>📅 Fréquence:</strong> " . $frequence . " séances/semaine</p>";
-  if ($equip) $html .= "<p style='margin: 5px 0;'><strong>🏋️ Équipements:</strong> " . htmlspecialchars($equip) . "</p>";
-  if ($contraintes) $html .= "<p style='margin: 5px 0; color: #c33;'><strong>⚠️ Contraintes:</strong> " . htmlspecialchars($contraintes) . "</p>";
+  $html .= "<div style='background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0; color: #333;'>";
+  $html .= "<p style='margin: 5px 0; color: #333;'><strong>👤 Client:</strong> " . htmlspecialchars($data['prenom'] ?? 'N/A') . " (" . (int)($data['age'] ?? 0) . " ans)</p>";
+  $html .= "<p style='margin: 5px 0; color: #333;'><strong>🎯 Objectif:</strong> " . htmlspecialchars(formatObjectif($objectif)) . "</p>";
+  $html .= "<p style='margin: 5px 0; color: #333;'><strong>💪 Niveau:</strong> " . htmlspecialchars(ucfirst($experience)) . "</p>";
+  $html .= "<p style='margin: 5px 0; color: #333;'><strong>📅 Fréquence:</strong> " . $frequence . " séances/semaine</p>";
+  if ($equip) $html .= "<p style='margin: 5px 0; color: #333;'><strong>🏋️ Équipements:</strong> " . htmlspecialchars($equip) . "</p>";
+  if ($contraintes) $html .= "<p style='margin: 5px 0; color: #d9534f;'><strong>⚠️ Contraintes:</strong> " . htmlspecialchars($contraintes) . "</p>";
   $html .= "</div>";
   
   // STRUCTURE DE PROGRAMME ADAPTÉE
@@ -164,7 +164,7 @@ function generateProgram($type, $data) {
   
   // NOTES IMPORTANTES
   $html .= "<h3 style='color: #ff8000; margin-top: 25px;'>⚡ Conseils importants</h3>";
-  $html .= "<ul style='background: #fff9e6; padding: 15px 30px; border-radius: 8px; border-left: 4px solid #ff8000;'>";
+  $html .= "<ul style='background: #fff9e6; padding: 15px 30px; border-radius: 8px; border-left: 4px solid #ff8000; color: #333;'>";
   $html .= "<li>Commencez par une semaine de familiarisation avec les mouvements</li>";
   $html .= "<li>Augmentez progressivement le poids de 2-5% quand vous maîtrisez le mouvement</li>";
   $html .= "<li>Repos minimal entre les séries: " . getRestTime($experience) . "s pour la force, " . getRestTime($experience, false) . "s pour l'hypertrophie</li>";
@@ -176,7 +176,7 @@ function generateProgram($type, $data) {
   
   // PROGRESSION
   $html .= "<h3 style='color: #ff8000; margin-top: 25px;'>📈 Suivi de progression</h3>";
-  $html .= "<p style='background: #e6f2ff; padding: 15px; border-radius: 8px; border-left: 4px solid #0078d4;'>";
+  $html .= "<p style='background: #e6f2ff; padding: 15px; border-radius: 8px; border-left: 4px solid #0078d4; color: #333;'>";
   $html .= "Notez vos poids et répétitions à chaque séance pour suivre votre progression. ";
   $html .= "Objectif: +1 à 2 kg de charge ou +1 à 2 reps chaque semaine sur les mouvements principaux.";
   $html .= "</p>";
@@ -212,14 +212,14 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
   
   // PLANNING PAR JOURS (Jour 1, Jour 2, etc.) - Avec les vrais noms de séances
   $schedule_html .= "<div style='background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;'>";
-  $schedule_html .= "<p style='margin: 0 0 10px; color: #666;'><strong>💡 Structure flexible :</strong> Répartissez ces séances selon vos disponibilités, en respectant au moins 48h de repos entre deux séances du même groupe musculaire.</p>";
+  $schedule_html .= "<p style='margin: 0 0 10px; color: #333;'><strong>💡 Structure flexible :</strong> Répartissez ces séances selon vos disponibilités, en respectant au moins 48h de repos entre deux séances du même groupe musculaire.</p>";
   $schedule_html .= "<ul style='list-style: none; padding: 0; margin: 0;'>";
   
   // Afficher les séances en fonction de la fréquence demandée
   for ($i = 1; $i <= $frequence; $i++) {
     $session_index = ($i - 1) % count($sessions_data);
     $session_name = $sessions_data[$session_index]['name'];
-    $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px;'><strong>Jour $i :</strong> $session_name</li>";
+    $schedule_html .= "<li style='padding: 8px; margin: 5px 0; background: #fff3e0; border-left: 4px solid #ff8000; border-radius: 4px; color: #333;'><strong>Jour $i :</strong> $session_name</li>";
   }
   
   $schedule_html .= "</ul></div>";
@@ -230,18 +230,18 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
     $sessions_html .= "<h4 style='margin: 0 0 10px; color: #111;'>" . $session['name'] . " (" . $session['duration'] . "min)</h4>";
     $sessions_html .= "<table style='width: 100%; border-collapse: collapse;'>";
     $sessions_html .= "<thead><tr style='background: #f0f0f0; border-bottom: 2px solid #ddd;'>";
-    $sessions_html .= "<th style='padding: 8px; text-align: left; border: 1px solid #ddd;'>Exercice</th>";
-    $sessions_html .= "<th style='padding: 8px; text-align: center; border: 1px solid #ddd;'>Séries</th>";
-    $sessions_html .= "<th style='padding: 8px; text-align: center; border: 1px solid #ddd;'>Reps</th>";
-    $sessions_html .= "<th style='padding: 8px; text-align: center; border: 1px solid #ddd;'>Repos</th>";
+    $sessions_html .= "<th style='padding: 8px; text-align: left; border: 1px solid #ddd; color: #333;'>Exercice</th>";
+    $sessions_html .= "<th style='padding: 8px; text-align: center; border: 1px solid #ddd; color: #333;'>Séries</th>";
+    $sessions_html .= "<th style='padding: 8px; text-align: center; border: 1px solid #ddd; color: #333;'>Reps</th>";
+    $sessions_html .= "<th style='padding: 8px; text-align: center; border: 1px solid #ddd; color: #333;'>Repos</th>";
     $sessions_html .= "</tr></thead><tbody>";
     
     foreach ($session['exercises'] as $ex) {
       $sessions_html .= "<tr style='border-bottom: 1px solid #ddd;'>";
-      $sessions_html .= "<td style='padding: 8px; border: 1px solid #ddd;'><strong>" . $ex['name'] . "</strong><br><small style='color: #666;'>" . $ex['notes'] . "</small></td>";
-      $sessions_html .= "<td style='padding: 8px; text-align: center; border: 1px solid #ddd;'>" . $ex['sets'] . "</td>";
-      $sessions_html .= "<td style='padding: 8px; text-align: center; border: 1px solid #ddd;'>" . $ex['reps'] . "</td>";
-      $sessions_html .= "<td style='padding: 8px; text-align: center; border: 1px solid #ddd;'>" . $ex['rest'] . "s</td>";
+      $sessions_html .= "<td style='padding: 8px; border: 1px solid #ddd; color: #333;'><strong>" . $ex['name'] . "</strong><br><small style='color: #666;'>" . $ex['notes'] . "</small></td>";
+      $sessions_html .= "<td style='padding: 8px; text-align: center; border: 1px solid #ddd; color: #333;'>" . $ex['sets'] . "</td>";
+      $sessions_html .= "<td style='padding: 8px; text-align: center; border: 1px solid #ddd; color: #333;'>" . $ex['reps'] . "</td>";
+      $sessions_html .= "<td style='padding: 8px; text-align: center; border: 1px solid #ddd; color: #333;'>" . $ex['rest'] . "s</td>";
       $sessions_html .= "</tr>";
     }
     
@@ -537,32 +537,32 @@ function generateNutritionAdvice($objectif, $data) {
   $poids = (float)($data['poids'] ?? 70);
   $age = (int)($data['age'] ?? 30);
   
-  $html = "<div style='background: #f0f7ff; padding: 15px; border-radius: 8px; border-left: 4px solid #0078d4;'>";
+  $html = "<div style='background: #f0f7ff; padding: 15px; border-radius: 8px; border-left: 4px solid #0078d4; color: #333;'>";
   
   $calPerkg = 30; // Calories par kg de poids corporel
   $totalCal = (int)($poids * $calPerkg);
   
   if ($objectif === 'prise_masse') {
-    $html .= "<p><strong>Surplus calorique:</strong> +300-500 kcal/jour</p>";
-    $html .= "<p><strong>Calories cibles:</strong> " . ($totalCal + 400) . " kcal/jour</p>";
-    $html .= "<p><strong>Protéines:</strong> " . (int)($poids * 2) . "-" . (int)($poids * 2.2) . "g/jour (Viande, oeufs, fromage blanc, protéine en poudre)</p>";
-    $html .= "<p><strong>Glucides:</strong> 4-6g par kg de poids corporel (Riz, pâtes, patates)</p>";
-    $html .= "<p><strong>Lipides:</strong> 0.8-1.2g par kg de poids corporel (Huile olive, avocado, oléagineux)</p>";
+    $html .= "<p style='color: #333;'><strong>Surplus calorique:</strong> +300-500 kcal/jour</p>";
+    $html .= "<p style='color: #333;'><strong>Calories cibles:</strong> " . ($totalCal + 400) . " kcal/jour</p>";
+    $html .= "<p style='color: #333;'><strong>Protéines:</strong> " . (int)($poids * 2) . "-" . (int)($poids * 2.2) . "g/jour (Viande, oeufs, fromage blanc, protéine en poudre)</p>";
+    $html .= "<p style='color: #333;'><strong>Glucides:</strong> 4-6g par kg de poids corporel (Riz, pâtes, patates)</p>";
+    $html .= "<p style='color: #333;'><strong>Lipides:</strong> 0.8-1.2g par kg de poids corporel (Huile olive, avocado, oléagineux)</p>";
   } elseif ($objectif === 'perte_poids') {
-    $html .= "<p><strong>Déficit calorique:</strong> -300-500 kcal/jour</p>";
-    $html .= "<p><strong>Calories cibles:</strong> " . ($totalCal - 400) . " kcal/jour</p>";
-    $html .= "<p><strong>Protéines:</strong> " . (int)($poids * 2.2) . "-" . (int)($poids * 2.5) . "g/jour (Essentiel pour préserver muscle)</p>";
-    $html .= "<p><strong>Glucides:</strong> 2-3g par kg de poids corporel</p>";
-    $html .= "<p><strong>Lipides:</strong> 0.6-0.8g par kg de poids corporel</p>";
+    $html .= "<p style='color: #333;'><strong>Déficit calorique:</strong> -300-500 kcal/jour</p>";
+    $html .= "<p style='color: #333;'><strong>Calories cibles:</strong> " . ($totalCal - 400) . " kcal/jour</p>";
+    $html .= "<p style='color: #333;'><strong>Protéines:</strong> " . (int)($poids * 2.2) . "-" . (int)($poids * 2.5) . "g/jour (Essentiel pour préserver muscle)</p>";
+    $html .= "<p style='color: #333;'><strong>Glucides:</strong> 2-3g par kg de poids corporel</p>";
+    $html .= "<p style='color: #333;'><strong>Lipides:</strong> 0.6-0.8g par kg de poids corporel</p>";
   } else {
-    $html .= "<p><strong>Maintenance calorique:</strong> ~" . $totalCal . " kcal/jour</p>";
-    $html .= "<p><strong>Protéines:</strong> " . (int)($poids * 1.8) . "-" . (int)($poids * 2.2) . "g/jour</p>";
-    $html .= "<p><strong>Glucides:</strong> 3-4g par kg de poids corporel</p>";
-    $html .= "<p><strong>Lipides:</strong> 0.8-1g par kg de poids corporel</p>";
+    $html .= "<p style='color: #333;'><strong>Maintenance calorique:</strong> ~" . $totalCal . " kcal/jour</p>";
+    $html .= "<p style='color: #333;'><strong>Protéines:</strong> " . (int)($poids * 1.8) . "-" . (int)($poids * 2.2) . "g/jour</p>";
+    $html .= "<p style='color: #333;'><strong>Glucides:</strong> 3-4g par kg de poids corporel</p>";
+    $html .= "<p style='color: #333;'><strong>Lipides:</strong> 0.8-1g par kg de poids corporel</p>";
   }
   
-  $html .= "<p style='margin-top: 15px;'><strong>💧 Hydratation:</strong> 30-35 ml d'eau par kg de poids corporel = " . (int)($poids * 30 / 1000) . "-" . (int)($poids * 35 / 1000) . "L/jour</p>";
-  $html .= "<p><strong>🥗 Timing:</strong> Petit-déj 30min après réveil • Collation avant entraînement • Post-workout immédiatement après</p>";
+  $html .= "<p style='margin-top: 15px; color: #333;'><strong>💧 Hydratation:</strong> 30-35 ml d'eau par kg de poids corporel = " . (int)($poids * 30 / 1000) . "-" . (int)($poids * 35 / 1000) . "L/jour</p>";
+  $html .= "<p style='color: #333;'><strong>🥗 Timing:</strong> Petit-déj 30min après réveil • Collation avant entraînement • Post-workout immédiatement après</p>";
   
   $html .= "</div>";
   
