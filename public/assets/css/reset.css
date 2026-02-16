@@ -4,7 +4,7 @@
     .wrap{max-width:800px;margin:30px auto;padding:0 18px}
     .card{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:18px}
     label{display:block;font-weight:700;margin-bottom:6px}
-    input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:#2b2b2b;color:#fff}
+    input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);background:#2b2b2b;color:#fff;margin-bottom:16px;box-sizing:border-box}
     .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
     .btn{border:none;border-radius:10px;padding:12px 18px;font-weight:800;cursor:pointer;background:var(--orange);color:#fff}
     .btn.secondary{background:transparent;color:#fff;border:1px solid var(--bd)}
