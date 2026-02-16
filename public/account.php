@@ -31,5 +31,7 @@ $first = htmlspecialchars($_SESSION['first_name'] ?? 'Utilisateur');
          <a class="btn" href="logout.php">Se déconnecter</a></p>
     </div>
   </div>
+
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

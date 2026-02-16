@@ -152,9 +152,7 @@ $active = 'about'; // pour surligner "À PROPOS" dans le header
 
   </main>
 
-  <footer>
-    © <span id="y"></span> Le Muscle Sympa — Perray-en-Yvelines. Tous droits réservés.
-  </footer>
+  <?php include __DIR__ . '/../views/partials/footer.php'; ?>
 
   <script src="assets/js/a_propos.js"></script>
 </body>

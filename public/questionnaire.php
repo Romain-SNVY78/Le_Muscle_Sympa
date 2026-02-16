@@ -209,5 +209,7 @@ $active = 'programs';
   </script>
 
   <script src="assets/js/questionnaire.js"></script>
+
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

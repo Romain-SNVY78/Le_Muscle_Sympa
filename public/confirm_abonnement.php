@@ -104,5 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php endif; ?>
     </section>
   </main>
+
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

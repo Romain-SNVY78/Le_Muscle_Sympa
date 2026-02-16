@@ -87,5 +87,6 @@ $active = 'programs';
   </div>
 </div>
 
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

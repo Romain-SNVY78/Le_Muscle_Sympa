@@ -262,5 +262,6 @@ function downloadProgram(programId) {
 }
 </script>
 
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

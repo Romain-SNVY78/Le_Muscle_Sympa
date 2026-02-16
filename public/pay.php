@@ -287,5 +287,6 @@ document.getElementById('payform').addEventListener('submit', (e) => {
 });
 </script>
 
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

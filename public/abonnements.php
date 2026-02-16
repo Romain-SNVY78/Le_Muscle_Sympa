@@ -90,5 +90,6 @@ $active = 'plans';
 
   </section>
 
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>

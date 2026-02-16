@@ -734,5 +734,6 @@ function getExerciseBank($experience, $type, $objectif, $contraintes) {
   </div>
 </div>
 
+<?php include __DIR__ . '/../views/partials/footer.php'; ?>
 </body>
 </html>
