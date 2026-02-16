@@ -93,18 +93,21 @@ if (empty($_SESSION['user_id'])) {
     h1{margin:0 0 18px;font-size:40px}
     .grid{display:grid;grid-template-columns:2fr 1.3fr;gap:18px}
     @media (max-width:980px){ .grid{grid-template-columns:1fr} }
-    .card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:18px}
-    h2{margin:0 0 12px}
-    label{display:block;font-weight:700;margin:10px 0 6px}
+    .card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px}
+    h2{margin:0 0 18px;font-size:18px}
+    label{display:block;font-weight:700;margin:0 0 8px}
     input,select{
       width:100%;padding:12px;border-radius:10px;border:1px solid var(--bd);
-      background:#2b2b2b;color:#fff
+      background:#2b2b2b;color:#fff;margin-bottom:16px;box-sizing:border-box
     }
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+    .row input,.row select{margin-bottom:0}
+    .row > div{display:flex;flex-direction:column}
+    .row label{margin-bottom:8px}
     .btn{border:none;border-radius:10px;padding:12px 18px;font-weight:800;cursor:pointer;background:var(--orange);color:#111}
     .btn:hover{background:var(--orange-dark)}
     .btn.secondary{background:transparent;color:#fff;border:1px solid var(--bd)}
-    .actions{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+    .actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
     .recap p{margin:6px 0;color:#ddd}
   </style>
 </head>
