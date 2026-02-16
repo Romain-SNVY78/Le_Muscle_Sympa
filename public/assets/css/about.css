@@ -45,7 +45,7 @@
     }
     .hero .tag{
       display:inline-block; background:linear-gradient(90deg, var(--orange), #ffa449);
-      color:#111; font-weight:800; letter-spacing:.4px; padding:6px 12px; border-radius:999px;
+      color:#fff; font-weight:800; letter-spacing:.4px; padding:6px 12px; border-radius:999px;
       border:1px solid rgba(0,0,0,.18);
     }
     .hero h1{ margin:18px 0 10px; font-size:40px; color:#fff; }
@@ -171,7 +171,7 @@
     .cta{ margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; }
     .btn{
       border:none; border-radius:10px; padding:12px 18px; font-weight:800; cursor:pointer;
-      background:var(--orange); color:#111; letter-spacing:.3px; transition:background .25s ease, transform .05s ease;
+      background:var(--orange); color:#fff; letter-spacing:.3px; transition:background .25s ease, transform .05s ease;
       box-shadow: 0 8px 20px rgba(255,128,0,.2);
     }
     .btn:hover{ background:var(--orange-dark); }

@@ -65,7 +65,7 @@
       font-weight:800;
       cursor:pointer;
       background:var(--orange);
-      color:#111;
+      color:#fff;
       box-shadow:0 8px 20px rgba(255,128,0,.2);
       text-decoration:none;
       display:inline-block;
