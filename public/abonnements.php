@@ -54,7 +54,7 @@ $active = 'plans';
       <div class="price">50€<span class="per">/ mois</span></div>
       <ul class="features">
         <li><span class="tick">✅</span> Accès à <strong>tous les équipements</strong></li>
-        <li><span class="tick">✅</span> <strong>2h de coaching</strong> offertes / mois</li>
+        <li><span class="tick">✅</span> <strong>2h de coaching</strong> inclus / mois</li>
         <li><span class="tick">✅</span> Suivi personnalisé</li>
       </ul>
       <!-- IMPORTANT : encodage du + => %2B -->
@@ -82,7 +82,7 @@ $active = 'plans';
       <ul class="features">
         <li><span class="tick">✅</span> Pour <strong>2 personnes</strong></li>
         <li><span class="tick">✅</span> Accès à <strong>tous les équipements</strong></li>
-        <li><span class="tick">✅</span> <strong>4h de coaching</strong> offertes / mois</li>
+        <li><span class="tick">✅</span> <strong>4h de coaching</strong> inclus / mois</li>
       </ul>
       <!-- IMPORTANT : encodage du + => %2B -->
       <a class="cta" href="confirm_plan.php?plan=duo%2B">Choisir DUO +</a>
