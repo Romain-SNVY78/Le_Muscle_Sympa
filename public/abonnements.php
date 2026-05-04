@@ -86,7 +86,7 @@ $active = 'plans';
       </ul>
       <!-- IMPORTANT : encodage du + => %2B -->
       <a class="cta" href="confirm_plan.php?plan=duo%2B">Choisir DUO +</a>
-      <div class="hint">Coaching inclus pour progresser vite.</div>
+      <div class="hint">Coaching inclus pour progresser rapidement.</div>
     </article>
 
   </section>
