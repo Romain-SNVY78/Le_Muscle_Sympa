@@ -15,12 +15,7 @@ Site web complet pour une salle de sport : gestion des membres, abonnements et p
 
 ### 1. Télécharger le projet
 
-**Option A — Via Git :**
-```bash
-git clone https://github.com/Romain-SNVY78/Le_Muscle_Sympa.git C:\xampp\htdocs\Le_Muscle_Sympa
-```
-
-**Option B — Via GitHub (ZIP) :**
+Via GitHub (ZIP) :**
 1. Aller sur https://github.com/Romain-SNVY78/Le_Muscle_Sympa
 2. Cliquer sur le bouton vert **"Code"**
 3. Cliquer sur **"Download ZIP"**
