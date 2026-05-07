@@ -193,15 +193,14 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
   $schedule_html = '';
   $sessions_html = '';
   
-  // Sélection du split en fonction de la fréquence et du niveau
+  // Sélection du split en fonction de la fréquence
+  // 2j → full_body | 3j → upper_lower | 4j+ → ppl (PPL 2x/semaine pour 5-6j)
   if ($frequence <= 2) {
     $split = 'full_body';
   } elseif ($frequence <= 3) {
     $split = 'upper_lower';
-  } elseif ($frequence <= 4) {
-    $split = 'ppl';
   } else {
-    $split = 'upper_lower_x2';
+    $split = 'ppl';
   }
   
   // Exercices de base par groupe musculaire
@@ -209,6 +208,15 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
   
   // RÉCUPÉRER LES SÉANCES POUR AFFICHER LES VRAIS NOMS DANS LE PLANNING
   $sessions_data = getSessions($split, $exercises, $experience, $type, $objectif);
+  
+  // Sécurité : si aucune séance n'a été générée, fallback sur ppl
+  if (empty($sessions_data)) {
+    $sessions_data = getSessions('ppl', $exercises, $experience, $type, $objectif);
+  }
+  // Garde ultime contre la division par zéro
+  if (empty($sessions_data)) {
+    $sessions_data = [['name' => 'Séance complète', 'duration' => 60, 'exercises' => []]];
+  }
   
   // PLANNING PAR JOURS (Jour 1, Jour 2, etc.) - Avec les vrais noms de séances
   $schedule_html .= "<div style='background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 15px 0;'>";
@@ -261,7 +269,12 @@ function generateProgramStructure($type, $experience, $frequence, $objectif, $co
  */
 function getSessions($split, $exercises, $experience, $type, $objectif) {
   $sessions = [];
-  
+
+  // Normalisation défensive : ramène tout split inconnu vers ppl
+  if (!in_array($split, ['full_body', 'upper_lower', 'ppl'])) {
+    $split = 'ppl';
+  }
+
   // ENDURANCE : Focus cardio et circuits
   if ($type === 'endurance') {
     $sessions[] = [
@@ -288,6 +301,7 @@ function getSessions($split, $exercises, $experience, $type, $objectif) {
         ['name' => 'Stretching', 'sets' => 1, 'reps' => '5-10 min', 'rest' => 0, 'notes' => 'Récupération'],
       ]
     ];
+    // Pour ppl (4+ séances/semaine), on ajoute une 3ème variante cardio
     if ($split === 'full_body' || $split === 'upper_lower') {
       $sessions[] = [
         'name' => 'Séance Cardio Modéré',
@@ -296,6 +310,17 @@ function getSessions($split, $exercises, $experience, $type, $objectif) {
           ['name' => $exercises['cardio_faible_impact'][0] ?? 'Marche rapide inclinée', 'sets' => 1, 'reps' => '30-40 min', 'rest' => 0, 'notes' => 'Zone 60-70% FCmax'],
           ['name' => $exercises['circuit_musculaire'][3] ?? 'Rowing léger', 'sets' => 3, 'reps' => '15-20', 'rest' => 45, 'notes' => 'Haut du corps'],
           ['name' => $exercises['gainage'][0] ?? 'Planche', 'sets' => 3, 'reps' => '40-60s', 'rest' => 60, 'notes' => 'Core'],
+        ]
+      ];
+    } else { // ppl
+      $sessions[] = [
+        'name' => 'Séance Endurance Seuil',
+        'duration' => 50,
+        'exercises' => [
+          ['name' => 'Échauffement cardio', 'sets' => 1, 'reps' => '5 min', 'rest' => 0, 'notes' => 'Montée progressive'],
+          ['name' => $exercises['cardio_principal'][0] ?? 'Course à pied', 'sets' => 1, 'reps' => '30-40 min', 'rest' => 0, 'notes' => 'Zone seuil 75-85% FCmax'],
+          ['name' => $exercises['gainage'][0] ?? 'Planche frontale', 'sets' => 3, 'reps' => '45-60s', 'rest' => 45, 'notes' => 'Core'],
+          ['name' => 'Retour au calme', 'sets' => 1, 'reps' => '5-10 min', 'rest' => 0, 'notes' => 'Récupération active'],
         ]
       ];
     }
@@ -338,7 +363,7 @@ function getSessions($split, $exercises, $experience, $type, $objectif) {
           ['name' => $exercises['force_dos'][4] ?? 'Farmer walks', 'sets' => 4, 'reps' => '40-60m', 'rest' => 90, 'notes' => 'Grip & core'],
         ]
       ];
-    } elseif ($split === 'ppl') {
+    } else { // ppl
       $sessions[] = [
         'name' => 'Push Force',
         'duration' => 55,
@@ -413,7 +438,7 @@ function getSessions($split, $exercises, $experience, $type, $objectif) {
           ['name' => 'Mollets debout', 'sets' => 4, 'reps' => '15-20', 'rest' => 45, 'notes' => 'Mollets'],
         ]
       ];
-    } elseif ($split === 'ppl') {
+    } else { // ppl
       $sessions[] = [
         'name' => 'Push (Poitrine / Épaules / Triceps)',
         'duration' => 60,
@@ -493,7 +518,7 @@ function getSessions($split, $exercises, $experience, $type, $objectif) {
           ['name' => $exercises['cardio_modere'][1] ?? 'Vélo', 'sets' => 1, 'reps' => '15-20 min', 'rest' => 0, 'notes' => 'Cardio modéré'],
         ]
       ];
-    } elseif ($split === 'ppl') {
+    } else { // ppl
       $sessions[] = [
         'name' => 'Push Entretien',
         'duration' => 45,
