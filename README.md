@@ -34,7 +34,7 @@ Via GitHub (ZIP) :**
 
 ### 3. Mettre en place la base de données
 
-1. Ouvrir [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+1. Ouvrir [http://localhost/phpmyadmi/](http://localhost/phpmyadmin/)
 2. Dans le panneau gauche, cliquer sur **"Nouvelle base de données"**
 3. Saisir le nom : `lms`
 4. Cliquer sur **"Créer"**
@@ -42,8 +42,7 @@ Via GitHub (ZIP) :**
 6. Cliquer sur l'onglet **"Importer"**
 7. Cliquer sur **"Choisir un fichier"** et sélectionner :
    ```
-   app/migrations/database.sql
-   ```
+"C:\xampp\htdocs\Le_Muscle_Sympa\app\migrations\database.sql"   ```
 8. Cliquer sur **"Importer"**
 
 > Cela crée automatiquement les 3 tables (`users`, `password_resets`, `user_programs`) et charge les données de test.
