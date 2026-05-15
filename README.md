@@ -15,7 +15,7 @@ Site web complet pour une salle de sport : gestion des membres, abonnements et p
 
 ### 1. Télécharger le projet
 
-Via GitHub (ZIP) :**
+**Via GitHub (ZIP) :**
 1. Aller sur https://github.com/Romain-SNVY78/Le_Muscle_Sympa
 2. Cliquer sur le bouton vert **"Code"**
 3. Cliquer sur **"Download ZIP"**
@@ -34,7 +34,7 @@ Via GitHub (ZIP) :**
 
 ### 3. Mettre en place la base de données
 
-1. Ouvrir [http://localhost/phpmyadmi/](http://localhost/phpmyadmin/)
+1. Ouvrir [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/)
 2. Dans le panneau gauche, cliquer sur **"Nouvelle base de données"**
 3. Saisir le nom : `lms`
 4. Cliquer sur **"Créer"**
@@ -42,7 +42,8 @@ Via GitHub (ZIP) :**
 6. Cliquer sur l'onglet **"Importer"**
 7. Cliquer sur **"Choisir un fichier"** et sélectionner :
    ```
-"C:\xampp\htdocs\Le_Muscle_Sympa\app\migrations\database.sql"   ```
+   C:\xampp\htdocs\Le_Muscle_Sympa\app\migrations\database.sql
+   ```
 8. Cliquer sur **"Importer"**
 
 > Cela crée automatiquement les 3 tables (`users`, `password_resets`, `user_programs`) et charge les données de test.
